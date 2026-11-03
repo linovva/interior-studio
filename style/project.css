@@ -1,0 +1,151 @@
+
+* {
+    outline: 1px solid red;
+    box-sizing: border-box;
+    text-decoration: none;
+    color: inherit;
+}
+
+body {
+    margin: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 10rem;
+    font-size: 1.2rem;
+}
+
+.nav-list {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    gap: 3rem;
+    list-style: none;
+}
+
+.nav-list li {
+    font-size: 1.2rem;
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    min-height: 70vh;
+    padding: 10rem;
+}
+
+.hero-content {
+    max-width: 35rem;
+}
+
+.project-info {
+    padding-bottom: 5rem;
+}
+
+.project-interact{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.gallery {
+    height: 500px;
+    display: flex;
+    gap: 2rem;
+}
+
+.gallery-main {
+    position: relative;
+    width: 75%;
+    height: 100%;
+}
+
+.gallery-main button {
+    position: absolute;
+    top: 50%;
+}
+
+#prevButton { left: 1rem; }
+#nextButton { right: 1rem; }
+
+.gallery-main img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.gallery-sidebar {
+    width: 25%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.gallery-thumbnails {
+    flex: 1;
+    min-height: 0;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.gallery-thumbnails::-webkit-scrollbar {
+    display: none;
+}
+
+.gallery-thumbnails img {
+    width: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+.gallery-button {
+    border: none;
+    background: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.interactPart{
+    display: flex;
+    justify-content: space-between;
+}
+
+.interactPart button{
+    width: 45%;
+    padding: 1rem;
+}
+
+.card-container-AR{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    padding: 2rem 5rem;
+}
+
+.card-container-AR img{
+    max-height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 10rem;
+}
