@@ -1,3 +1,5 @@
+import { initPanoramaViewer, startRendering as startPanoramaRendering, stopRendering as stopPanoramaRendering } from "./panorama360.js";
+import { init3DViewer, startRendering as start3DRendering, stopRendering as stop3DRendering } from "./viewer3D.js";
 
 const params = new URLSearchParams(window.location.search);
 const id = Number(params.get('id'));
@@ -131,6 +133,7 @@ function displayInteractButtons(project) {
     if (project.panoramas != null) {
         const buttonPanorama = document.createElement('button');
         buttonPanorama.textContent = '360-панорама интерьера';
+        buttonPanorama.id = 'panoramaButton';
         interactPart.appendChild(buttonPanorama);
     }
 
@@ -138,6 +141,7 @@ function displayInteractButtons(project) {
     if (project.model3D != null) {
         const buttonModel3D = document.createElement('button');
         buttonModel3D.textContent = '3D-модель интерьера';
+        buttonModel3D.id = 'modelButton';
         interactPart.appendChild(buttonModel3D);
     }
 
@@ -181,6 +185,9 @@ function displayARObjects(project) {
 
             const buttonAR = document.createElement('button');
             buttonAR.textContent = 'Посмотреть в AR';
+            buttonAR.id = 'ARButton';
+            buttonAR.dataset.modelAndroid = object.modelAndroid;
+            buttonAR.dataset.modelIOS = object.modelIOS;
             cardAR.appendChild(buttonAR);
 
             cardContainerAR.appendChild(cardAR);
@@ -251,14 +258,79 @@ function setupGalleryListener(){
 
 }
 
+let initializedPanoramaViewer = false;
+
 // Обработчик кнопки 360-панорамы
-function setupPanoramaListener(){}
+function setupPanoramaListener(){
+    const openButton = document.getElementById('panoramaButton');
+    const panoramaModal = document.getElementById('panoramaModal');
+    const closeButton = panoramaModal.querySelector('#closeButton');
+
+    openButton.addEventListener('click', async () => {
+        panoramaModal.showModal();
+        if (!initializedPanoramaViewer) {
+            await initPanoramaViewer(project);
+            initializedPanoramaViewer = true;
+        }
+        startPanoramaRendering();
+    });
+
+    closeButton.addEventListener('click', () => {
+        panoramaModal.close();
+    });
+
+    panoramaModal.addEventListener('close', () => {
+        stopPanoramaRendering();
+    });
+}
+
+let initialized3DViewer = false;
 
 // Обработчик кнопки 3Д-модели
-function setup3DmodelListener(){}
+function setup3DmodelListener(project){
+    const openButton = document.getElementById('modelButton');
+    const modelModal = document.getElementById('modelModal');
+    const closeButton = modelModal.querySelector('#closeButton');
+
+    openButton.addEventListener('click', async () =>{
+        modelModal.showModal();
+        if(!initialized3DViewer) {
+            await init3DViewer(project);
+            initialized3DViewer = true;
+        }
+        start3DRendering();
+    });
+
+    closeButton.addEventListener('click', () => {
+        modelModal.close();
+    });
+
+    modelModal.addEventListener('close', () => {
+        stop3DRendering();
+    });
+}
+
+let initARViewer = false; 
 
 // Обработчик кнопки AR
-function setupARListener(){}
+function setupARListener(project){
+    const openButton = document.getElementById('ARButton');
+    const ARModal = document.getElementById('ARModal');
+    const closeButton = ARModal.querySelector('#closeButton');
+
+    openButton.addEventListener('click', async () => {
+        ARModal.showModal();
+        if (!initARViewer) {
+            initARViewer = true;
+        }
+    });
+
+    closeButton.addEventListener('click', () => {
+        ARModal.close();
+    });
+
+    ARModal.addEventListener('close', () => {});
+}
 
 const project = findProjectById(projects, id);
 
@@ -266,6 +338,9 @@ if (project) {
     displayProject(project);
     setupMiniGalleryListener();
     setupGalleryListener();
+    setupPanoramaListener();
+    setup3DmodelListener(project);
+    setupARListener(project);
 } else {
     displayProject(null);
 }

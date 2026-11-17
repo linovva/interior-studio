@@ -13,14 +13,14 @@ const projects = [
             "assets/images/living4.jpg",
             "assets/images/living5.jpg"
         ],
-        panoramas: "Панорама1",
-        model3D: "Модель1",
+        panoramas: "assets/panoramas/bedroom.png",
+        model3D: "assets/interior-models/bedroom.glb",
         objects: [{
                     name: "Диван",
                     image: "assets/images/sofa.jpg",
                     description: "Изумрудный мягкий диван",
-                    modelAndroid: "assets/models/sofa.glb",
-                    modelIOS: "assets/models/sofa.usdz"
+                    modelAndroid: "assets/ar-models/picture.glb",
+                    modelIOS: "assets/ar-models/sofa.usdz"
                 }]
     },
     {

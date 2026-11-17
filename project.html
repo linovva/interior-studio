@@ -23,6 +23,31 @@
         <section id="project-interact" class="project-interact"></section>
     </main>
 
+    <dialog id="panoramaModal" class="panorama-modal">
+        <button id="closeButton"></button>
+        <div id="panoramaViewer"></div>
+    </dialog>
+
+    <dialog id="modelModal" class="model-modal">
+        <button id="closeButton"></button>
+        <div id="modelViewer"></div>
+    </dialog>
+
+    <dialog id="ARModal" class="AR-modal">
+        <button id="closeButton"></button>
+        <model-viewer 
+            id="ARViewer"
+            src="assets/ar-models/picture.glb"
+            ar
+            ar-modes="scene-viewer quick-look"
+            camera-controls>
+        </model-viewer>
+
+        <button slot="ar-button">
+            Разместить в комнате
+        </button>
+    </dialog>
+
     <footer>
         <div class="info">
             <h2>СВЯЗЬ С НАМИ</h2>
@@ -40,7 +65,20 @@
             </div>
         </div>
     </footer> 
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+            }
+        }
+    </script>
     <script src="js/data.js"></script>
-    <script src="js/project.js"></script>
+    <script type="module" src="js/project.js"></script>
+    <script
+        type="module"
+        src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.1.0/model-viewer.min.js">
+    </script>
 </body>
 </html>
