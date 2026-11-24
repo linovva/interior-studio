@@ -125,6 +125,12 @@ function validateContactForm(name, email, message) {
 // Обработка отправки формы
 function setupContactFormListener() {
     const form = document.getElementById('contactForm');
+    const contactModal = document.getElementById('contactModal');
+    const closeButton = document.querySelector('.modal-close');
+
+    closeButton.addEventListener('click', () => {
+        contactModal.close();
+    });
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();

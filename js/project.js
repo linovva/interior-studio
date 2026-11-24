@@ -340,7 +340,7 @@ let initARViewer = false;
 // Обработчик кнопки AR
 function setupARListener(project){
     const ARModal = document.getElementById('ARModal');
-    const closeButton = ARModalModal.querySelector('.modal-close');
+    const closeButton = ARModal.querySelector('.modal-close');
     const ARViewer = ARModal.querySelector('#ARViewer');
     const openButtons = document.querySelectorAll('.ar-button');
 
