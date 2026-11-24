@@ -1,5 +1,6 @@
 import { initPanoramaViewer, startRendering as startPanoramaRendering, stopRendering as stopPanoramaRendering } from "./panorama360.js";
 import { init3DViewer, startRendering as start3DRendering, stopRendering as stop3DRendering } from "./viewer3D.js";
+import { createImg } from './utils.js';
 
 const params = new URLSearchParams(window.location.search);
 const id = Number(params.get('id'));
@@ -44,6 +45,7 @@ function displayProjectInfo(project) {
 
 // Отображение галереи проекта
 function displayGallery(project) {
+    if (!project.photos?.length) return;
     // Галерея
     const projectInteract = document.getElementById('project-interact');
     projectInteract.innerHTML = '';
@@ -54,18 +56,11 @@ function displayGallery(project) {
 
     // Большая фотография
     const main = document.createElement('div');
+    
     main.classList.add('gallery-main');
 
-    const mainImg = document.createElement('img');
-    mainImg.src = project.photos?.[0] || 'assets/images/default.jpg';
-    mainImg.alt = project.name || 'Изображение проекта';
+    const mainImg = createImg(project.photos?.[0], project.name)
     mainImg.id = 'mainImg';
-
-    mainImg.onerror = function() {
-        this.onerror = null;
-        mainImg.src = 'assets/images/default.jpg';
-    };
-
     main.appendChild(mainImg);
 
     const prevButton = document.createElement('button');
@@ -90,15 +85,8 @@ function displayGallery(project) {
     thumbnails.classList.add('gallery-thumbnails');
 
     project.photos.forEach((photo, index) => {
-        const img = document.createElement('img');
-        img.src = photo || 'assets/images/default.jpg';
-        img.alt = project.name || 'Изображение проекта';
+        const img = createImg(photo, project.name);
         img.dataset.number = index;
-
-        img.onerror = function() {
-            this.onerror = null;
-            img.src = 'assets/images/default.jpg';
-        };
 
         thumbnails.appendChild(img);
     });
@@ -148,8 +136,26 @@ function displayInteractButtons(project) {
     projectInteract.appendChild(interactPart);
 }
 
+const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+const isAndroid = /Android/i.test(navigator.userAgent);
+
 // Отображение кнопки просмотра в AR
-function displayARObjects(project) {
+async function displayARObjects(project) {
+    // Проверяем ОС и поддержку AR
+    const ARViewer = document.getElementById('ARViewer');
+
+    if (isIOS) {
+        const supportsAR = document.createElement('a').relList.supports('ar');
+        if (!supportsAR) return;
+    }
+    
+    else if (isAndroid) {
+        const supportsAR = await navigator.xr?.isSessionSupported('immersive-ar') ?? false;
+        if (!supportsAR) return;
+    } else { // если это пк
+        return; 
+    }
+
     // Объекты интерьера, доступные в AR, если есть
     if (project.objects.length > 0) {
         const projectInteract = document.getElementById('project-interact');
@@ -164,14 +170,7 @@ function displayARObjects(project) {
         project.objects.forEach(object => {
             const cardAR = document.createElement('div');
 
-            const imgAR = document.createElement('img');
-            imgAR.src = object.image || 'assets/images/default.jpg';
-            imgAR.alt = object.name;
-
-            imgAR.onerror = function() {
-                this.onerror = null;
-                imgAR.src = 'assets/images/default.jpg';
-            };
+            const imgAR = createImg(object.image, object.name);
 
             cardAR.appendChild(imgAR);
 
@@ -185,9 +184,11 @@ function displayARObjects(project) {
 
             const buttonAR = document.createElement('button');
             buttonAR.textContent = 'Посмотреть в AR';
-            buttonAR.id = 'ARButton';
-            buttonAR.dataset.modelAndroid = object.modelAndroid;
-            buttonAR.dataset.modelIOS = object.modelIOS;
+            buttonAR.classList.add('ar-button');
+
+            if (isIOS) buttonAR.dataset.modelIOS = object.modelIOS; 
+            buttonAR.dataset.model = object.modelAndroid;
+
             cardAR.appendChild(buttonAR);
 
             cardContainerAR.appendChild(cardAR);
@@ -197,7 +198,7 @@ function displayARObjects(project) {
     }
 }
 
-function displayProject(project) {
+async function displayProject(project) {
     if (!project) {
         projectContainer.textContent = "Проекты не найдены";
         return;
@@ -206,7 +207,7 @@ function displayProject(project) {
     displayProjectInfo(project);
     displayGallery(project);
     displayInteractButtons(project);
-    displayARObjects(project);
+    await displayARObjects(project);
 }
 
 // Обработчик мини-галереи
@@ -259,20 +260,32 @@ function setupGalleryListener(){
 }
 
 let initializedPanoramaViewer = false;
+let loadingPanoramaViewer = false;
 
 // Обработчик кнопки 360-панорамы
-function setupPanoramaListener(){
+function setupPanoramaListener(project){
     const openButton = document.getElementById('panoramaButton');
     const panoramaModal = document.getElementById('panoramaModal');
-    const closeButton = panoramaModal.querySelector('#closeButton');
+    const closeButton = panoramaModal.querySelector('.modal-close');
 
     openButton.addEventListener('click', async () => {
         panoramaModal.showModal();
-        if (!initializedPanoramaViewer) {
-            await initPanoramaViewer(project);
-            initializedPanoramaViewer = true;
+        if (loadingPanoramaViewer) return;
+        try {
+            if (!initializedPanoramaViewer) {
+                loadingPanoramaViewer = true;
+                await initPanoramaViewer(project);
+                initializedPanoramaViewer = true;
+            }
+            if (panoramaModal.open) {
+            startPanoramaRendering();
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Не удалось загрузить панораму")
+        } finally {
+            loadingPanoramaViewer = false;
         }
-        startPanoramaRendering();
     });
 
     closeButton.addEventListener('click', () => {
@@ -285,20 +298,32 @@ function setupPanoramaListener(){
 }
 
 let initialized3DViewer = false;
+let loading3DViewer = false;
 
 // Обработчик кнопки 3Д-модели
 function setup3DmodelListener(project){
     const openButton = document.getElementById('modelButton');
     const modelModal = document.getElementById('modelModal');
-    const closeButton = modelModal.querySelector('#closeButton');
+    const closeButton = modelModal.querySelector('.modal-close');
 
     openButton.addEventListener('click', async () =>{
         modelModal.showModal();
-        if(!initialized3DViewer) {
-            await init3DViewer(project);
-            initialized3DViewer = true;
+        if (loading3DViewer) return;
+        try { 
+            if(!initialized3DViewer) {
+                loading3DViewer = true;
+                await init3DViewer(project);
+                initialized3DViewer = true;
+            } 
+            if (modelModal.open) {
+                start3DRendering();
+            }
+        } catch (error) {
+            alert('Не удалось загрузить модель');
+            console.error(error);
+        } finally {
+            loading3DViewer = false;
         }
-        start3DRendering();
     });
 
     closeButton.addEventListener('click', () => {
@@ -314,15 +339,25 @@ let initARViewer = false;
 
 // Обработчик кнопки AR
 function setupARListener(project){
-    const openButton = document.getElementById('ARButton');
     const ARModal = document.getElementById('ARModal');
-    const closeButton = ARModal.querySelector('#closeButton');
+    const closeButton = ARModalModal.querySelector('.modal-close');
+    const ARViewer = ARModal.querySelector('#ARViewer');
+    const openButtons = document.querySelectorAll('.ar-button');
 
-    openButton.addEventListener('click', async () => {
-        ARModal.showModal();
-        if (!initARViewer) {
-            initARViewer = true;
-        }
+    openButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            ARModal.showModal();
+
+            if (isIOS) {
+                ARViewer.src = button.dataset.model;
+                ARViewer.setAttribute(
+                    'ios-src',
+                    button.dataset.modelIOS
+                );
+            }
+
+            // Здесь будет твоя логика для Android
+        });
     });
 
     closeButton.addEventListener('click', () => {
@@ -335,12 +370,23 @@ function setupARListener(project){
 const project = findProjectById(projects, id);
 
 if (project) {
-    displayProject(project);
-    setupMiniGalleryListener();
-    setupGalleryListener();
-    setupPanoramaListener();
-    setup3DmodelListener(project);
-    setupARListener(project);
+    await displayProject(project);
+    if (project.photos?.length > 0) {
+        setupMiniGalleryListener();
+        setupGalleryListener();
+    }
+
+    if (project.panoramas != null) {
+        setupPanoramaListener(project);
+    }
+
+    if (project.model3D != null) {
+        setup3DmodelListener(project);
+    }
+
+    if (project.objects?.length > 0) {
+        setupARListener(project);
+    }
 } else {
     displayProject(null);
 }

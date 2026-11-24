@@ -2,10 +2,10 @@
 const projects = [
     {
         id: 1,
-        name: "Современная гостиная",
+        name: "Современная спальня",
         style: "Современный",
-        roomType: "Гостиная",
-        description: "Проект светлой гостиной в современном стиле.",
+        roomType: "Спальня",
+        description: "Проект спальни в современном стиле",
         photos: [
             "assets/images/living1.jpg",
             "assets/images/living2.jpg",
@@ -16,11 +16,11 @@ const projects = [
         panoramas: "assets/panoramas/bedroom.png",
         model3D: "assets/interior-models/bedroom.glb",
         objects: [{
-                    name: "Диван",
+                    name: "Ковёр",
                     image: "assets/images/sofa.jpg",
-                    description: "Изумрудный мягкий диван",
-                    modelAndroid: "assets/ar-models/picture.glb",
-                    modelIOS: "assets/ar-models/sofa.usdz"
+                    description: "Серый ковер",
+                    modelAndroid: "assets/ar-models/carpet.glb",
+                    modelIOS: "assets/ar-models/carpet.usdz"
                 }]
     },
     {

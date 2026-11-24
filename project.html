@@ -7,6 +7,7 @@
     <title>Document</title>
 </head>
 <body>
+    <!-- Логотип и навигация -->
     <header>
         <a href="index.html">INTERIOR-STUDIO</a>
         <nav>
@@ -18,34 +19,11 @@
         </nav>
     </header>
 
+    <!-- Контейнер проекта -->
     <main class="hero" id="projectContainer"> 
         <section id="project-info" class="project-info"></section>
         <section id="project-interact" class="project-interact"></section>
     </main>
-
-    <dialog id="panoramaModal" class="panorama-modal">
-        <button id="closeButton"></button>
-        <div id="panoramaViewer"></div>
-    </dialog>
-
-    <dialog id="modelModal" class="model-modal">
-        <button id="closeButton"></button>
-        <div id="modelViewer"></div>
-    </dialog>
-
-    <dialog id="ARModal" class="AR-modal">
-        <button id="closeButton"></button>
-        <model-viewer 
-            id="ARViewer"
-            src="assets/ar-models/picture.glb"
-            ar
-            ar-modes="scene-viewer quick-look"
-            camera-controls>
-            <button slot="ar-button">
-                Разместить в комнате
-            </button>
-        </model-viewer>
-    </dialog>
 
     <footer>
         <div class="info">
@@ -65,6 +43,30 @@
         </div>
     </footer> 
 
+    <!-- Модалки разных просмотрщиков -->
+    <dialog id="panoramaModal" class="panorama-modal">
+        <button class="modal-close"></button>
+        <div id="panoramaViewer"></div>
+    </dialog>
+
+    <dialog id="modelModal" class="model-modal">
+        <button class="modal-close"></button>
+        <div id="modelViewer"></div>
+    </dialog>
+
+    <dialog id="ARModal" class="AR-modal">
+        <button class="modal-close"></button>
+        <model-viewer 
+            id="ARViewer"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            camera-controls>
+            <button slot="ar-button">
+                Разместить в комнате
+            </button>
+        </model-viewer>
+    </dialog>
+
     <script type="importmap">
         {
             "imports": {
@@ -79,5 +81,6 @@
         type="module"
         src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.1.0/model-viewer.min.js">
     </script>
+
 </body>
 </html>

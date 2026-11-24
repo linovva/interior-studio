@@ -1,3 +1,4 @@
+import { createImg } from './utils.js';
 // Получение данных о проектах из JSON-файла
 async function loadProjects(){};
 
@@ -6,6 +7,7 @@ function isEmptyProject(projects) {
     if (!projects || projects.length === 0) return 0;
     return 1;
 }
+
 
 // Отображение проектов на странице 
 function displayProjects(projects) {
@@ -21,15 +23,9 @@ function displayProjects(projects) {
         const card = document.createElement('div');
         card.classList.add('card');
         
-        const img = document.createElement('img');
-        img.src = project.photos?.[0] || 'assets/images/default.jpg'; // если нет пути к фото, используем изображение по умолчанию
-        img.alt = project.name || 'Изображение проекта';
-        card.appendChild(img);
+        const img = createImg(project.photos[0], project.name);
 
-        img.onerror = function() {
-            this.onerror = null; // предотвращаем бесконечный цикл при ошибке загрузки
-            img.src = 'assets/images/default.jpg'; // изображение по умолчанию при ошибке загрузки
-        }
+        card.appendChild(img);
 
         const title = document.createElement('h3');
         title.textContent = project.name || 'Без названия';
@@ -98,7 +94,7 @@ function setupContactButtonListener(){
     });
 
     document.addEventListener('click', (e) =>{
-        if (e.target.id != 'closeButton') return;
+        if (!e.target.classList.contains('close-button')) return;
         contactModal.close();
     })
 }

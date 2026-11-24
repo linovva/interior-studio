@@ -7,6 +7,7 @@
     <title>INTERIOR-STUDIO</title>
 </head>
 <body>
+    <!-- Навигация и логотип -->
     <header>
         <a href="index.html">INTERIOR-STUDIO</a>
         <nav>
@@ -25,10 +26,11 @@
                 <h2>ПРОЕКТЫ</h2>
                 <h1>РЕАЛИЗОВАННЫЕ ДИЗАЙН-ПРОЕКТЫ</h1>
                 <p>Интерьеры, в которых сочетается комфорт и стиль</p>
-                <button id="contactButton">Связаться с нами</button>
+                <button id="contactButton">Связаться с нами →</button>
             </div>
         </section>
 
+        <!-- Категории интерьеров -->
         <section> 
             <form id='filterForm' class="filter-form">
 
@@ -59,6 +61,7 @@
 
             <div class="cards-container"></div>
         </section>
+
     </main>
 
     <footer>
@@ -78,9 +81,11 @@
             </div>
         </div>
     </footer> 
+
+    <!-- Модалка обратной связи -->
     <dialog id="contactModal">
         <h1>Связаться с нами</h1>
-        <button id="closeButton">x</button>
+        <button class="modal-close">x</button>
         <form id="contactForm">
             <input type="text" name="name" placeholder="Имя">
             <input type="text" name="email" placeholder="Email">
@@ -88,7 +93,8 @@
             <button type="submit">Отправить</button>
         </form>
     </dialog>
+    
     <script src="js/data.js"></script>
-    <script src="js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
